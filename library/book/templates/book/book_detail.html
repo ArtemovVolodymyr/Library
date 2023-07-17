@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="mb-4">Book view</h1>
+
+    {% if author %}
+    <form action="{% url 'delete_book' book.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label for="staticUser" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+                <input type="text" disabled class="form-control" id="staticUser" value="{{ book.name }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="staticDescription" class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+                <input type="text" disabled class="form-control" id="staticDescription" value="{{ book.description }}">
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group row">
+            <label for="staticId" class="col-sm-2 col-form-label">Id</label>
+            <div class="col-sm-10">
+                <input type="text" disabled class="form-control" id="staticId" value="{{ book.id }}">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-danger" >Delete the book</button>
+    </form>
+{% else %}
+    <div class="alert alert-danger" role="alert">
+        Book not found!
+    </div>
+{% endif %}
+</div>
+{% endblock %}

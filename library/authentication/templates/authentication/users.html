@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="mb-4">Users</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Full name</th>
+                <th scope="col">email</th>
+                <th scope="col">role</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in users %}
+                <tr>
+                    <th scope="row">
+                        {{ i.id }}
+                    </th>
+                    <td>{{ i.first_name }} {{ i.last_name }} {{ i.middle_name }}</td>
+                    <td>{{ i.email }}</td>
+                    <td>{{ i.get_role_display }}</td>
+                    <td>
+                        <a class="btn btn-outline-dark btn-sm" href="{% url 'user' i.id %}" role="button">Show</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

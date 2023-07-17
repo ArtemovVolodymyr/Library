@@ -1,0 +1,45 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row justify-content-md-start align-items-center mb-4">
+        <div class="col-md-auto">
+            <h1>Authors</h1>
+        </div>
+        <div class="col-md-auto">
+            <a href="{% url 'author-create' %}" class="btn btn-primary" role="button" aria-pressed="true">Create author</a>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Surname</th>
+
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in authors %}
+                <tr>
+                    <th scope="row">
+                        {{ i.id }}
+                    </th>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.surname }}</td>
+
+
+                    <td>
+
+                        <a class="btn btn-outline-dark btn-sm" href="{% url 'author_detail' i.id %}" role="button">Show</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

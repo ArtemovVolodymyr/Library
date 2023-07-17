@@ -1,0 +1,35 @@
+<!-- create_author.html -->
+
+{% extends "index.html" %}
+{% load static %}
+
+{% block css_files %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="mb-4">Create Author</h1>
+    <form action="{% url 'author-create' %}" method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="mb-1" for="inputName">Name</label>
+            <input type="text" class="form-control" id="inputName" name="name" required>
+        </div>
+        <div class="form-group">
+            <label class="mb-1" for="inputSurname">Surname</label>
+            <input type="text" class="form-control" id="inputSurname" name="surname" required>
+        </div>
+        <div class="form-group">
+            <label class="mb-1" for="inputPatronymic">Patronymic</label>
+            <input type="text" class="form-control" id="inputPatronymic" name="patronymic" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2 mb-4">Submit</button>
+
+        {% if alerts %}
+            {{ alerts|safe }}
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

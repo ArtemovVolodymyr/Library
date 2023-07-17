@@ -1,0 +1,58 @@
+2{% extends "index.html" %}
+{% load static %}
+
+{% block css_files %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="mb-4">Create order</h1>
+    <form action="{% url 'order-create' %}" method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="mb-1" for="inputVisitor">Visitor</label>
+            <select class="custom-select" id="inputVisitor" name="visitor" required>
+                <option selected></option>
+                {% for visitor in visitors %}
+                    <option value="{{ visitor.id }}">{{ visitor }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="mb-1" for="inputBook">Book</label>
+            <select class="custom-select" id="inputBook" name="book" required>
+                <option selected></option>
+                {% for book in books %}
+                    <option value="{{ book.id }}">{{ book }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="mb-1" for="inputPlatedEndAt">Plated end at</label>
+            <div class="input-group date" id="datepicker">
+                <input type="text" class="form-control" id="inputPlatedEndAt" name="plated_end_at" required>
+                <span class="input-group-append">
+                    <span class="input-group-text bg-white">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2 mb-4">Submit</button>
+
+        {% if alerts %}
+            {{ alerts|safe }}
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
+
+{% block js_files %}
+<script type="text/javascript">
+    $(function() {
+        $('#datepicker').datepicker();
+    });
+</script>
+{% endblock %}

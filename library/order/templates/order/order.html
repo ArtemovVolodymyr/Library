@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="mb-4">Order view</h1>
+
+    {% if order %}
+        <form action="{% url 'order-close' order.id %}" method="GET">
+            <div class="form-group row">
+                <label for="staticBook" class="col-sm-2 col-form-label">Book</label>
+                <div class="col-sm-10">
+                    <input type="text" disabled class="form-control" id="staticBook" value="{{ order.book }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticUser" class="col-sm-2 col-form-label">User</label>
+                <div class="col-sm-10">
+                    <input type="text" disabled class="form-control" id="staticUser" value="{{ order.user }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticCreatedAt" class="col-sm-2 col-form-label">Created at</label>
+                <div class="col-sm-10">
+                    <input type="text" disabled class="form-control" id="staticCreatedAt" value="{{ order.created_at }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticEndAt" class="col-sm-2 col-form-label">End at</label>
+                <div class="col-sm-10">
+                    <input type="text" disabled class="form-control" id="staticEndAt" value="{{ order.end_at }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticPlatedEndAt" class="col-sm-2 col-form-label">Plated end at</label>
+                <div class="col-sm-10">
+                    <input type="text" disabled class="form-control" id="staticPlatedEndAt" value="{{ order.plated_end_at }}">
+                </div>
+            </div>
+            {% if not order.end_at %}
+                <button type="submit" class="btn btn-danger">Close the order</button>
+            {% endif %}
+        </form>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            Order not found!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

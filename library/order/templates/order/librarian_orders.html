@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row justify-content-md-start align-items-center mb-4">
+        <div class="col-md-auto">
+            <h1>Orders</h1>
+        </div>
+        <div class="col-md-auto">
+            <a href="{% url 'order-create' %}" class="btn btn-primary" role="button" aria-pressed="true">Create order</a>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Book</th>
+                <th scope="col">Plated end at</th>
+                <th scope="col">End at</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in orders %}
+                <tr>
+                    <th scope="row">
+                        {{ i.id }}
+                    </th>
+                    <td>{{ i.book }}</td>
+                    <td>{{ i.plated_end_at }}</td>
+                    <td>{{ i.end_at }}</td>
+                    <td>
+                        <a class="btn btn-outline-dark btn-sm" href="{% url 'order' i.id %}" role="button">Show</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title %}Update Book{% endblock %}
+{% block content %}
+<div class="container mt-3">
+    <h1>Update Book</h1>
+    <form method="post" action="/book/update/{{ book.id }}/">
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" value="{{ book.name }}" required><br><br>
+        <label for="description">Description:</label>
+        <input type="text" name="description" id="description" value="{{ book.description }}" required><br><br>
+        <label for="count">Count:</label>
+        <input type="number" name="count" id="count" value="{{ book.count }}" required><br><br>
+        <input type="submit" value="Update">
+    </form>
+</div>
+{% endblock %}
