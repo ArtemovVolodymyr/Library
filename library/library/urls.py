@@ -10,5 +10,6 @@ urlpatterns = [
     path('', include('book.urls')),
     path('', include('order.urls')),
     path('api/v1/', include('api.v1.author_api.urls')),
+    path('api/v1/', include('api.v1.book_api.urls')),
 ]
 
