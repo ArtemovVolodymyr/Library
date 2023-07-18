@@ -5,8 +5,7 @@ from rest_framework import routers
 
 
 urlpatterns = [
-    path('user/signup', views.signup),
-    path('user/login', views.login),
+    path('user/', views.signup_or_login),
     path('user/<int:user_id>', views.get_user),
 ]
 
