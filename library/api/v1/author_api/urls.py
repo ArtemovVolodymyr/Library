@@ -7,6 +7,6 @@ from rest_framework import routers
 
 urlpatterns = [
     #path('', include(router.urls))
-    path('author', views.create_or_get)
+    #path('author', views.create_or_get)
 ]
 
