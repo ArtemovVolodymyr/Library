@@ -8,7 +8,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 
 from authentication.models import CustomUser
-from .serializers import UserSerializer
+from order.models import Order
+from .serializers import UserSerializer, OrderSerializer
 
 @api_view(['POST', 'GET'])
 def signup_or_login(request):
@@ -61,3 +62,24 @@ def get_user(request, user_id):
     else:
         user.delete()
         return Response(f"Deleted user with id {user_id}", status=status.HTTP_200_OK)
+    
+    
+@api_view(['GET', "DELETE"])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_order_by_id(request, user_id, order_id):
+    order = Order.objects.get(id=order_id)
+    if request.user.id != user_id and request.user.role != 1:
+        return Response("Acces restricted!", status=status.HTTP_403_FORBIDDEN)
+    serializer = OrderSerializer(instance=order)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_order(request, user_id, order_id):
+    order = Order.objects.get(id=order_id)
+    if request.user.id != user_id and request.user.role != 1:
+        return Response("Acces restricted!", status=status.HTTP_403_FORBIDDEN)
+    serializer = OrderSerializer(instance=order)
+    return Response(serializer.data, status=status.HTTP_200_OK)
