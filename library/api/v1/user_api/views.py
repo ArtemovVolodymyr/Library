@@ -10,33 +10,40 @@ from rest_framework.response import Response
 from authentication.models import CustomUser
 from order.models import Order
 from .serializers import UserSerializer, OrderSerializer
+from book.models import Book
 
 @api_view(['POST', 'GET'])
 def signup_or_login(request):
-    print(request.data)
-    if request.method == "POST": 
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+    if request.method == "POST":
+        if request.data["action"] == "register": 
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                
+                user = CustomUser.objects.get(email = request.data['email'])
+                user.set_password(request.data["password"])
+                user.save()
+                
+                token = Token.objects.create(user=user)
+                return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
             
-            user = CustomUser.objects.get(email = request.data['email'])
-            user.set_password(request.data["password"])
-            user.save()
-            
-            token = Token.objects.create(user=user)
-            return Response({"token": token.key, "user": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif request.data["action"] == "login":
+            user = get_object_or_404(CustomUser, email = request.data["email"])
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if not user.check_password(request.data['password']):
+                return Response({"detail": "Not found."}, status=status.HTTP_400_BAD_REQUEST)
+            token, created = Token.objects.get_or_create(user=user)
+            serializer = UserSerializer(instance=user)
+            
+            return Response({"token":token.key, "user": serializer.data}, status=status.HTTP_200_OK)
     else:
-        print(request.data)
-        user = get_object_or_404(CustomUser, email = request.data["email"])
-        
-        if not user.check_password(request.data['password']):
-            return Response({"detail": "Not found."}, status=status.HTTP_400_BAD_REQUEST)
-        token, created = Token.objects.get_or_create(user=user)
-        serializer = UserSerializer(instance=user)
-        
-        return Response({"token":token.key, "user": serializer.data}, status=status.HTTP_200_OK)
+        if request.user.role != 1:
+            return Response("Acces restricted!", status=status.HTTP_403_FORBIDDEN)
+        users = CustomUser.objects.all()
+        serializer = UserSerializer(instance=users, many=True)
+        return Response(serializer.data)
+
 
 @api_view(['GET', 'PATCH', "DELETE"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -64,22 +71,39 @@ def get_user(request, user_id):
         return Response(f"Deleted user with id {user_id}", status=status.HTTP_200_OK)
     
     
-@api_view(['GET', "DELETE"])
+@api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_order_by_id(request, user_id, order_id):
-    order = Order.objects.get(id=order_id)
+def user_order(request, user_id, order_id):
     if request.user.id != user_id and request.user.role != 1:
         return Response("Acces restricted!", status=status.HTTP_403_FORBIDDEN)
-    serializer = OrderSerializer(instance=order)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    order = Order.objects.get(id=order_id)
+    
+    if request.method == 'POST':
+        order.delete()
+        return Response(f"Deleted order with id {order_id}", status=status.HTTP_200_OK)
+    else:
+        serializer = OrderSerializer(instance=order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_order(request, user_id, order_id):
-    order = Order.objects.get(id=order_id)
+def all_user_orders(request, user_id):
     if request.user.id != user_id and request.user.role != 1:
         return Response("Acces restricted!", status=status.HTTP_403_FORBIDDEN)
-    serializer = OrderSerializer(instance=order)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    if request.method == "GET":
+        orders = Order.objects.filter(user_id=user_id)
+        
+        serializer = OrderSerializer(instance=orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        book = Book.objects.get(id = int(request.data.get('book'))) 
+        user = CustomUser.objects.get(id = user_id)
+        plated_end_at = request.data.get('plated_end_at')
+        
+        new_order = Order.objects.create(user=user, book=book, plated_end_at=plated_end_at)
+        
+        serializer = OrderSerializer(instance=new_order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
