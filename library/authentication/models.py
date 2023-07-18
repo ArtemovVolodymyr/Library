@@ -28,3 +28,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __repr__(self):
         return f"{CustomUser.__name__}(id={self.id})"
+    def update(self,
+            first_name=None,
+            last_name=None,
+            middle_name=None,
+            password=None,
+            role=None,
+            is_active=None):
+        user_to_update = CustomUser.objects.filter(email=self.email).first()
+        if first_name != None and len(first_name) <= 20:
+            user_to_update.first_name = first_name
+        if last_name != None and len(last_name) <= 20:
+            user_to_update.last_name = last_name
+        if middle_name != None and len(middle_name) <= 20:
+            user_to_update.middle_name = middle_name
+        if password != None:
+            user_to_update.password = password
+        if role != None:
+            user_to_update.role = role
+        if is_active != None:
+            user_to_update.is_active = is_active
+        user_to_update.save()
