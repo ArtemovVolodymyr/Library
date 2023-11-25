@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.db import IntegrityError
 
 from .forms import AuthorForm
 from django.http import JsonResponse
@@ -22,18 +23,17 @@ def create_author(request):
         surname = request.POST.get("surname")
         patronymic = request.POST.get("patronymic")
 
-        author = Author.create(name, surname, patronymic)
-        if author:
-            return redirect(reverse('index_author'))
+        author = Author()
+        author.id = Author.get_next_free_id()
+        author.name = name
+        author.surname = surname
+        author.patronymic = patronymic
+        author.save()
+
+        return redirect(reverse('index_author'))
 
     return render(request, "create_author.html")
 
-# def create_author(request):
-#     form = AuthorForm(request.POST or None)
-#     if form.is_valid():
-#         form.save()
-#         return redirect('index_author')
-#     return render(request, 'create_author.html', {'form': form})
 def delete_author(request, author_id):
     author = get_object_or_404(Author, id=author_id)
     author.delete()
@@ -46,7 +46,7 @@ def update_author(request, author_id):
     if request.method == "POST":
         name = request.POST.get("name")
         surname = request.POST.get("surname")
-        patronymic = request.POST.get("patronymic")
+        book = request.POST.get("book")
 
         author.update(name=name, surname=surname, patronymic=patronymic)
         return JsonResponse({"success": True})

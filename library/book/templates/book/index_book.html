@@ -19,29 +19,26 @@
                 <th scope="col">Name</th>
                 <th scope="col">Author</th>
                 <th scope="col">Count</th>
-
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            {% for i in book %}
+            {% for book in books %}
                 <tr>
-                    <th scope="row">
-                        {{ i.id }}
-                    </th>
-                    <td>{{ i.name }}</td>
-                    <td>{{ i.author }}</td>
-                    <td>{{ i.count }}</td>
-
-
+                    <th scope="row">{{ book.id }}</th>
+                    <td>{{ book.name }}</td>
                     <td>
-
-                        <a class="btn btn-outline-dark btn-sm" href="{% url 'book_detail' i.id %}" role="button">Show</a>
+                        {% for author in book.authors.all %}
+                            {{ author.name }} {{ author.surname }},
+                        {% endfor %}
+                    </td>
+                    <td>{{ book.count }}</td>
+                    <td>
+                        <a class="btn btn-outline-dark btn-sm" href="{% url 'book_detail' book.id %}" role="button">Show</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-
 </div>
 {% endblock %}

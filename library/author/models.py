@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class Author(models.Model):
@@ -7,13 +8,27 @@ class Author(models.Model):
     surname = models.CharField(blank=True, max_length=20)
     patronymic = models.CharField(blank=True, max_length=20)
     books = models.ManyToManyField('book.Book', related_name='authors')
-    id = models.AutoField(primary_key=True)
 
     def __str__(self):
         return f'{self.name} {self.surname} {self.patronymic}'
 
-    def __repr__(self):
-        return f"Author(id={self.pk})"
+    @staticmethod
+    def get_next_free_id():
+        existing_ids = set(Author.objects.values_list('id', flat=True))
+        if not existing_ids:
+            return 1
+        max_id = max(existing_ids)
+        for i in range(1, max_id + 2):
+            if i not in existing_ids:
+                return i
+
+                
+@receiver(pre_save, sender=Author)
+def author_pre_save(sender, instance, **kwargs):
+    if not instance.id:
+        # Якщо id не встановлено, встановлюємо його наступним можливим числом
+        last_author = Author.objects.order_by('-id').first()
+        instance.id = last_author.id + 1 if last_author else 1
 
     @staticmethod
     def get_by_id(author_id):
