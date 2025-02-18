@@ -1,10 +1,14 @@
 from django.db import models
+from author.models import Author
+
 
 class Book(models.Model):
     name = models.CharField(blank=True, max_length=128)
     description = models.CharField(blank=True, max_length=256)
     count = models.IntegerField(default=10)
-    authors = models.ManyToManyField('author.Author', related_name='books')
+    id = models.AutoField(primary_key=True, editable=False)
+
+    authors = models.ManyToManyField(Author, related_name='books_authored')
 
     def __str__(self):
         return self.name
@@ -12,37 +16,35 @@ class Book(models.Model):
     def get_authors(self):
         return self.authors.all()
 
-    @staticmethod
-    def get_next_free_id():
-        existing_ids = set(Book.objects.values_list('id', flat=True))
+    @classmethod
+    def get_next_free_id(cls):
+        existing_ids = set(cls.objects.values_list('id', flat=True))
         if not existing_ids:
             return 1
-        max_id = max(existing_ids)
-        for i in range(1, max_id + 2):
-            if i not in existing_ids:
-                return i
+        return min(set(range(1, max(existing_ids) + 2)) - existing_ids)
 
-    @staticmethod
-    def get_by_id(book_id):
-        return Book.objects.get(id=book_id) if Book.objects.filter(id=book_id).exists() else None
-
-    @staticmethod
-    def delete_by_id(book_id):
-        if Book.get_by_id(book_id) is None:
-            return False
-        Book.objects.get(id=book_id).delete()
-        return True
-
-    @staticmethod
-    def create(name, description, count=10):
-        if len(name) > 128:
+    @classmethod
+    def get_by_id(cls, book_id):
+        try:
+            return cls.objects.get(pk=book_id)
+        except cls.DoesNotExist:
             return None
 
-        book = Book()
-        book.id = Book.get_next_free_id()
+    @classmethod
+    def delete_by_id(cls, book_id):
+        try:
+            book = cls.objects.get(pk=book_id)
+            book.delete()
+            return True
+        except cls.DoesNotExist:
+            return False
+
+    @classmethod
+    def create(cls, name, description):
+        book = cls()
+        book.id = cls.get_next_free_id()
         book.name = name
         book.description = description
-        book.count = count
         book.save()
         return book
 

@@ -90,3 +90,8 @@ def order_close_by_id(order_id):
         result = True
 
     return result
+
+def order_create(user, book, plated_end_at):
+    new_order = Order(user=user, book=book, plated_end_at=plated_end_at)
+    new_order.save()
+    return new_order

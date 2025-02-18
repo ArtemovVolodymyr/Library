@@ -8,7 +8,14 @@
             <h1>Books</h1>
         </div>
         <div class="col-md-auto">
-            <a href="{% url 'create_book' %}" class="btn btn-primary" role="button" aria-pressed="true">Create book</a>
+            {% if user.is_authenticated %}
+                {% if user.role == 1 %}
+
+                <a href="{% url 'create_book' %}" class="btn btn-primary" role="button" aria-pressed="true">Create book</a>
+            
+                {% endif %}
+            {% endif %}
+            
         </div>
     </div>
 
@@ -29,7 +36,7 @@
                     <td>{{ book.name }}</td>
                     <td>
                         {% for author in book.authors.all %}
-                            {{ author.name }} {{ author.surname }},
+                            {{ author.name }} {{ author.surname }}
                         {% endfor %}
                     </td>
                     <td>{{ book.count }}</td>

@@ -7,6 +7,7 @@ from order.selectors.order import all_orders, get_order_by_id_or_none, visitor_o
 from order.services.order import order_close_by_id, order_create
 from utils.errors import messages_to_html_alert, message_to_html_alert
 from utils.time import str_to_datetime
+from .models import Order
 
 
 def librarian_orders_view(request):
@@ -45,7 +46,7 @@ def order_create_view(request):
         book = get_book_by_id_or_none(book_id)
 
         try:
-            order_create(
+            new_order = order_create(
                 user=user,
                 book=book,
                 plated_end_at=plated_end_at
@@ -54,5 +55,6 @@ def order_create_view(request):
             context['alerts'] = messages_to_html_alert(errors, 'danger')
         else:
             context['alerts'] = message_to_html_alert('You have successfully created the order!', 'success')
+            return redirect('librarian-orders')
 
     return render(request, 'order/create_order.html', context)

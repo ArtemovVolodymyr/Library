@@ -21,16 +21,10 @@ def create_author(request):
     if request.method == "POST":
         name = request.POST.get("name")
         surname = request.POST.get("surname")
-        patronymic = request.POST.get("patronymic")
 
-        author = Author()
-        author.id = Author.get_next_free_id()
-        author.name = name
-        author.surname = surname
-        author.patronymic = patronymic
-        author.save()
-
-        return redirect(reverse('index_author'))
+        author = Author.create(name, surname)
+        if author:
+            return redirect(reverse('index_author'))
 
     return render(request, "create_author.html")
 
@@ -46,9 +40,8 @@ def update_author(request, author_id):
     if request.method == "POST":
         name = request.POST.get("name")
         surname = request.POST.get("surname")
-        book = request.POST.get("book")
 
-        author.update(name=name, surname=surname, patronymic=patronymic)
+        author.update(name=name, surname=surname)
         return JsonResponse({"success": True})
 
     return render(request, "update_author.html", {"author": author})

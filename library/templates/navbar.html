@@ -10,20 +10,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index_book' %}">Books</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index_author' %}">Authors</a>
+                    </li>
+
+                    {% if user.role == 1 %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users' %}">Users</a>
                     </li>
-                    {% if user.role == 0 %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'librarian-orders' %}">Orders</a>
+                    </li>
+
+                    {% elif user.role == 0 %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'visitor-orders' %}">Orders</a>
                         </li>
-                    {% elif user.role == 1 %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'librarian-orders' %}">Orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'index_author' %}">Authors</a>
-                        </li>
+
                     {% endif %}
                 {% endif %}
             </ul>

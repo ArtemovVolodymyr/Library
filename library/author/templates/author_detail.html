@@ -30,8 +30,17 @@
                 <input type="text" disabled class="form-control" id="staticId" value="{{ author.id }}">
             </div>
         </div>
+        <div>
+            {% if user.is_authenticated %}
+                {% if user.role == 1 %}
 
-        <button type="submit" class="btn btn-danger" >Delete the author</button>
+                <button type="submit" class="btn btn-danger" >Delete the author</button>
+            
+                {% endif %}
+            {% endif %}
+            
+        </div>
+        
     </form>
 {% else %}
     <div class="alert alert-danger" role="alert">

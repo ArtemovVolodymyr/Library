@@ -36,8 +36,16 @@
                 <input type="text" disabled class="form-control" id="staticId" value="{{ book.id }}">
             </div>
         </div>
+        <div>
+            {% if user.is_authenticated %}
+                {% if user.role == 1 %}
 
-        <button type="submit" class="btn btn-danger" >Delete the book</button>
+                <button type="submit" class="btn btn-danger" >Delete the book</button>
+            
+                {% endif %}
+            {% endif %}
+        </div>
+        
     </form>
     {% else %}
     <div class="alert alert-danger" role="alert">

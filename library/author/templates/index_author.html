@@ -8,7 +8,14 @@
             <h1>Authors</h1>
         </div>
         <div class="col-md-auto">
-            <a href="{% url 'author-create' %}" class="btn btn-primary" role="button" aria-pressed="true">Create author</a>
+            {% if user.is_authenticated %}
+                {% if user.role == 1 %}
+
+                <a href="{% url 'author-create' %}" class="btn btn-primary" role="button" aria-pressed="true">Create author</a>
+            
+                {% endif %}
+            {% endif %}
+            
         </div>
     </div>
 

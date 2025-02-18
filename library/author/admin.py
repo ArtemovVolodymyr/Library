@@ -1,9 +1,9 @@
+# author/admin.py
+
 from django.contrib import admin
+from .models import Author
 
-from author.models import Author
-
-
-@admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'surname',)
-    list_display = ('name', 'surname',)
+    list_display = ('id', 'name', 'surname')  
+
+admin.site.register(Author, AuthorAdmin)

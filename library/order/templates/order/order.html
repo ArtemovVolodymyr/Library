@@ -37,8 +37,14 @@
                     <input type="text" disabled class="form-control" id="staticPlatedEndAt" value="{{ order.plated_end_at }}">
                 </div>
             </div>
+            {% if user.is_authenticated %}
             {% if not order.end_at %}
+                {% if user.role == 1 %}
+
                 <button type="submit" class="btn btn-danger">Close the order</button>
+            
+                {% endif %}
+            {% endif %}
             {% endif %}
         </form>
     {% else %}

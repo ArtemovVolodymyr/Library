@@ -13,17 +13,16 @@ def index_book(request):
 
 def book_detail(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    authors = book.authors.all()  
+    authors = book.authors.all()
     return render(request, 'book/book_detail.html', {'book': book, 'authors': authors})
-    
+
 def create_book(request):
     if request.method == "POST":
         name = request.POST.get("name")
         description = request.POST.get("description")
-        count = request.POST.get("count")
-        author_ids = request.POST.getlist("authors")  # предполагается, что у вас есть поле в форме с именем "authors"
+        author_ids = request.POST.getlist("authors")
 
-        book = Book.create(name, description, count)
+        book = Book.create(name, description)
         if book:
             authors = Author.objects.filter(id__in=author_ids)
             book.add_authors(authors)
@@ -31,7 +30,7 @@ def create_book(request):
 
     authors = Author.objects.all()
     return render(request, "book/create_book.html", {'authors': authors})
-
+    
 def delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     book.delete()
@@ -44,7 +43,7 @@ def update_book(request, book_id):
         name = request.POST.get("name")
         description = request.POST.get("description")
         count = request.POST.get("count")
-        author_ids = request.POST.getlist("authors")  # предполагается, что у вас есть поле в форме с именем "authors"
+        author_ids = request.POST.getlist("authors") 
 
         book.update(name=name, description=description, count=count)
         authors = Author.objects.filter(id__in=author_ids)
